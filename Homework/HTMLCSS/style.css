@@ -1,0 +1,122 @@
+/*CSS style sheet
+Week 1
+Caroline Azeau
+10334858*/
+
+header {
+	height: 80px;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+body {
+	font-family: Georgia, serif;
+	font-size: 20px;
+}
+
+.left {
+	float: left;
+	width: 150px;
+}
+
+.right {
+	margin-left: 200px;
+	overflow: hidden;
+}
+
+.messages {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.messages .check {
+	float: left;
+}
+
+.messages .time {
+    float: right;
+    width: 4em;
+    text-align: center;
+}
+.messages .sender {
+    float: left;
+    width: 25%;
+    padding-right: 5px;
+}
+
+#account{
+	float: right;
+	padding-top: 25px;
+	padding-right: 0px;
+	width: 8%;
+}
+
+#buttons {
+	float: left;
+	width: 60%;
+}
+
+#icon {
+	width: 20%;
+	left: 90%;
+}
+
+#more{
+	width: 20%;
+}
+
+#nav {
+	background: #FF0000;
+	height: 600px;
+	padding: 5px;
+}
+
+#options {
+	float: right;
+	width: 7%;
+	padding-right: 0px;
+}
+
+#optionsbar {
+	height: 30px;
+}
+
+#refresh{
+	float: left;
+	width: 20%;
+}
+
+#search {
+    border: 1px solid black;
+    height: 20px;
+    width: 60%;
+    background: white;
+    float: left;
+}
+
+#searchbutton {
+	color: white;
+	background-color: blue;
+	height: 20px;
+	width: 20%;
+}
+
+#select{
+	float: left;
+	width: 20%;
+}
+
+
+
+#taskbar {
+	float: left;
+	padding-top: 25px;
+	padding-bottom: 25px;
+	position: fixed;
+	width: 70%;
+}
