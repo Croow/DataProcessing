@@ -1,5 +1,5 @@
-# Name :
-# Student number :
+# Name : Caroline Azeau
+# Student number : 10334858
 '''
 This module contains an implementation of split_string.
 '''
@@ -23,35 +23,64 @@ def split_string(source, separators):
     The ouput of this function should be a list of strings split at the
     positions of each of the separator characters.
     '''
-    split_string = []                       # Create list for the splitted string
+
+    # Create list for the splitted string 
+    # and create a copy of SOURCE
+    split_string = []
     remainder_source = str( source )
-    if source:                              # Check if source contains elements
-        if separators:                      # Check if separators contain elements
-            first_character = True          # Boolean that checks if we are working with the first character of the remainder of the source
-            st = ''                         
-            for letter in source:           # Loop over source
-                count = 0                   
-                for separator in separators:            # Loop over separators
-                    count += 1                          # Count the number of separators checked
-                    if letter == separator:             # Check if letter of source equals to the separator
-                        if first_character:             # If it is the first character of the remainder of the source: remove character
+
+    # Check if SOURCE contains elements
+    if source:
+
+        # Check if SEPARATORS contain elements
+        if separators:
+
+            # Create a boolean that checks if we are working with
+            # the first character of the rREMAINDER_SOURCE
+            first_character = True
+            st = ''
+
+            # Loop over SOURCE          
+            for letter in source:
+                count = 0
+
+                # Loop over SEPARATORS            
+                for separator in separators:
+
+                    # Count the number of separators checked        
+                    count += 1
+
+                    # Check if letter of source equals to the separator
+                    if letter == separator:
+
+                        # If it is the first character of REMAINDER_SOURCE: remove character
+                        # If not: append ST to SPLIT_STRING and remove first character of REMAINDER_SOURCE
+                        # and set FIRST_CHARACTER to TRUE
+                        if first_character:
                             remainder_source = remainder_source[1:]
-                        else:                           # If not: append ST to SPLIT_STRING and remove first character of the remainder of the source
+                        else:                           
                             split_string.append( st )
                             st = ''
                             remainder_source = remainder_source[1:]
-                            first_character = True       # We are back to the first character
+                            first_character = True
                         break
-                    else:                   # If letter does not equals separator: append letter to ST, remove the character of remainder source and set FIRST_CHARACTER to false
+                    # If LETTER does not equals SEPARATOR: append letter to ST, remove 
+                    # the character of REMAINDER_SOURCE and set FIRST_CHARACTER to FALSE
+                    else:
                         if count == len( separators ):
                             st += remainder_source[0]
                             remainder_source = remainder_source[1:]
                             first_character = False
                             break
-            if st:                          # If soucre does not end with separator: append remainder to SPLIT_STRING
+            # If SOURCE does not end with a separator: append remainder to SPLIT_STRING
+            if st:
                 split_string.append( st )
-        else:                               # If no separators are mentioned append SOURCE to SPLIT_STRING
+
+        # If no separators are mentioned, append SOURCE to SPLIT_STRING
+        else:
             split_string.append( source )
+
+    # Return a list of the splitted string
     return split_string
 
 

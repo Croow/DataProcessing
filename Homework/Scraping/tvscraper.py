@@ -1,9 +1,12 @@
 #!/usr/bin/env python
+# -*- coding: latin-1 -*-
 # Name: Caroline Azeau
 # Student number: 10334858
 '''
 This script scrapes IMDB and outputs a CSV file with highest ranking tv series.
 '''
+import os, sys
+
 import csv
 
 from pattern.web import URL, DOM, plaintext
@@ -24,26 +27,43 @@ def extract_tvseries(dom):
     - Actors/actresses (comma separated if more than one)
     - Runtime (only a number!)
     '''
-    series = []                             # Create list for series
+
+    # Create list for series
+    series = []
+
+    # Loop over the series and substract the needed information
     for e in dom.by_tag(".title"):
-        serie = []                          # Create list for one serie
-        serie.append(plaintext(e.by_tag('a')[0].content).encode('utf-8'))           # Append title of serie
-        serie.append(plaintext(e.by_tag(".value")[0].content).encode('utf-8'))      # Append ranking of serie
-        genres = []                                                                 # Create list for genres
-        for a in e.by_tag(".genre")[:1]:                                            # Find genres of serie
+        serie = []
+
+        # Substract title of the serie
+        serie.append(plaintext(e.by_tag('a')[0].content).encode('utf-8'))
+
+        # Substract ranking of the serie
+        serie.append(plaintext(e.by_tag(".value")[0].content).encode('utf-8'))
+
+        # Substract genres of the serie
+        genres = []
+        for a in e.by_tag(".genre")[:1]:                                            
             for b in a.by_tag("a"):
                 genres.append(plaintext(b.content).encode('utf-8'))
-        serie.append(', '.join(genres))                                             # Append genres of serie
-        actors = []                                                                 # Create list for actors
-        for a in e.by_tag("span.credit")[:1]:                                       # Find actors of serie
+        serie.append(', '.join(genres))  
+
+        # Substract actors of the serie
+        actors = []
+        for a in e.by_tag("span.credit")[:1]:
             for b in a.by_tag("a"):
                 actors.append(plaintext(b.content).encode('utf-8'))
-        serie.append(', '.join(actors))                                             # Append genres of serie
+        serie.append(', '.join(actors))
+
+        # If runtime is known: append runtime of serie
+        # If runtime is not known: set runtime to zero
         if e.by_tag('.runtime'):
-            serie.append(plaintext(e.by_tag('.runtime')[0].content).replace(' mins.',"").encode('utf-8'))       # If runtime is known: append runtime of serie
+            serie.append(plaintext(e.by_tag('.runtime')[0].content).replace(' mins.',"").encode('utf-8'))
         else:
-            serie.append('0')                                                                                   # If runtime is not known: set runtime to zero
+            serie.append('0')
         series.append(serie)
+
+    # Returns a list of series
     return series
 
 
