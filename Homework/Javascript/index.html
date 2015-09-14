@@ -391,12 +391,14 @@
 
 	"use strict";
 
+	// Turn the JSON data into an array
 	function loadJSON(){
 		var data = document.getElementById('json').value;
-		var data_array = JSON.parse(data)
-		return data_array
+		var data_array = JSON.parse(data);
+		return data_array;
 	}
 
+	// Turn the CSV data into an array
 	function loadCSV(){
 		var data = document.getElementById('csv').value;
 		var data_array = data.split( "\n" );
@@ -406,26 +408,26 @@
 			var splitEl = data_array[i].split(",");
 			data_array[i] = splitEl
 		}
-		return data_array
+		return data_array;
 	}
 	
-	// Find the minimum and maximum temperature
+	// Find the minimum and maximum temperature, and the width and hieght of the canvas
 	function findBorders(data_array){
 		var temperatures = [];
 		for (var i = 0; i <= data_array.length - 1; i++) {
-			temperatures.push(data_array[i][1])
+			temperatures.push(data_array[i][1]);
 		}
-		var min_temp = Math.min.apply(Math, temperatures)
-		var max_temp = Math.max.apply(Math, temperatures)
-		var width = document.getElementById('canvas').getAttribute("width")
-    	var height = document.getElementById('canvas').getAttribute("height")
-		return [min_temp,max_temp,width,height]
+		var min_temp = Math.min.apply(Math, temperatures);
+		var max_temp = Math.max.apply(Math, temperatures);
+		var width = document.getElementById('canvas').getAttribute("width");
+    	var height = document.getElementById('canvas').getAttribute("height");
+		return [min_temp,max_temp,width,height];
 	}
 
 	// Define a linear transformation function
 	function createTransform(domain, range, inverse){
-		var a = (range[1] - range[0]) / (domain[1] - domain[0])
-		var b = range[0] - domain[0]
+		var a = (range[1] - range[0]) / (domain[1] - domain[0]);
+		var b = range[0] - domain[0];
 		if (inverse) {
 			return function(x){
 				return (x - b) / a ;
@@ -440,60 +442,74 @@
 	// Define the function to draw the axis
 	function draw_axis() {
 	  	var canvas = document.getElementById('canvas');
+	  	var spacing = 50;
 	  	if (canvas.getContext){
     		var context = canvas.getContext('2d');
 	  		context.beginPath();
-	  		context.moveTo(50, 0)
-	  		context.lineTo(50, height - 50)
-	  		context.lineTo(width, height - 50)
-	  		context.stroke()
+	  		context.moveTo(spacing, 0);
+	  		context.lineTo(spacing, height - spacing);
+	  		context.lineTo(width, height - spacing);
+	  		context.stroke();
 	  	}
-
 	}
 
 	// Define the function to draw the text around the axis
 	function draw_text() {
   		var canvas = document.getElementById('canvas')
-  		var months = [0, 30, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365]
-  		var temps = [0, 50, 100, 150, 200, 250, 300, 350]
-  		var x = createTransform([0, data_CSV.length - 1], [50, width], false);
-  		var y = createTransform([min_temp - 30, max_temp + 30], [50, height], false);
+
+  		// Put the first day of the month, the name of the month and te temperatures in an array
+  		var months = [0, 30, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+  		var month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  		var temps = [-50, 0, 50, 100, 150, 200, 250, 300, 350];
+
+  		// Define the number of px to center the text, to create space and to place the tickmarks
+  		var text_centering = 30;
+  		var spacing_1 = 50;
+  		var spacing_2 = 15;
+  		var tickmark = 2;
+
+  		// Create a transform function for the x-values and the y-values
+  		var x = createTransform([0, data_CSV.length - 1], [spacing_1, width], false);
+  		var y = createTransform([min_temp - text_centering, max_temp + text_centering], [spacing_1, height], false);
+
+  		// Change first day of the months to the needed pixel values
   		for (var i = 0 ; i < months.length; i++) {
   			months[i] = x( months[i] );
   		};
+
+  		// Change the temperatures to the needed pixel values
   		var temps_canvas = [];
-  		for (var i =0 ;i < temps.length; i++) {
-  			temps_canvas[i] = y(temps[i])
+  		for (var i = 0 ;i < temps.length; i++) {
+  			temps_canvas[i] = y( temps[i] );
   		};
+
+  		// Start drawing the texts
   		if (canvas.getContext) {
   			var context = canvas.getContext('2d');
   			context.font = "16px serif";
-  			context.strokeText("temperature", 10, 10);
-  			context.strokeText("date", width - 50, height - 10);
-  			context.fillText("Jan", months[0] + 30,height - 30)
-  			context.fillText("Feb", months[1] + 30, height - 30)
-  			context.fillText("Mar", months[2] + 30, height - 30)
-  			context.fillText("Apr", months[3] + 30, height - 30)
-  			context.fillText("May", months[4] + 30, height - 30)
-  			context.fillText("Jun", months[5] + 30, height - 30)
-  			context.fillText("Jul", months[6] + 30, height - 30)
-  			context.fillText("Aug", months[7] + 30, height - 30)
-  			context.fillText("Sep", months[8] + 30, height - 30)
-  			context.fillText("Oct", months[9] + 30, height - 30)
-  			context.fillText("Nov", months[10] + 30, height - 30)
-  			context.fillText("Dec", months[11] + 30, height - 30)
+  			context.fillText("TEMPERATURE", spacing_2, spacing_2);
+  			context.fillText("DATE", width - spacing_1, height - spacing_2);
+
+  			// Draw the names of the months on the x axis
+  			for (var i = 0 ; i < months.length ; i++) {
+  				context.fillText(month_names[i], months[i] + text_centering, height - text_centering);
+  			}
+
+  			// Draw the tickmarks on the x axis
   			for (var i = 0; i < months.length; i++) {
   				context.beginPath();
-  				context.moveTo(months[i], height - 52)
-  				context.lineTo(months[i],height - 48)
+  				context.moveTo(months[i], height - spacing_1 - tickmark);
+  				context.lineTo(months[i],height - spacing_1 + tickmark);
   				context.stroke();
   			};
+
+  			// Draw the tickmarks on the y axis and draw the temperature values
   			for (var i = 0; i < temps_canvas.length; i++) {
   				context.beginPath();
-  				context.moveTo(48, height - temps_canvas[i])
-  				context.lineTo(52,height - temps_canvas[i])
+  				context.moveTo(spacing_1 - tickmark, height - temps_canvas[i]);
+  				context.lineTo(spacing_1 + tickmark,height - temps_canvas[i]);
   				context.stroke();
-  				context.fillText(temps[i] / 10, 30, height - temps_canvas[i]);
+  				context.fillText(temps[i] / 10, text_centering, height - temps_canvas[i]);
   			};
   		};
 	};
@@ -501,41 +517,99 @@
 	// Define the function to draw the graph
 	function draw(data_array, color) {
   		var canvas = document.getElementById('canvas');
-  		var tx = createTransform([0, data_array.length - 1], [50, width], false);
-		var ty = createTransform([min_temp - 30, max_temp + 30], [50, height], false);
+
+  		// Define the number of px to create space
+  		var spacing_1 = 50;
+  		var spacing_2 = 30;
+
+  		// Create a transform function for the x-values and the y-values
+  		var tx = createTransform([0, data_array.length - 1], [spacing_1, width], false);
+		var ty = createTransform([min_temp - spacing_1, max_temp + spacing_2], [spacing_1, height], false);
+
+		// Start drawing the line
   		if (canvas.getContext) {
     		var context = canvas.getContext('2d');
-    		var begin_y_data = data_array[0][1]
-    		var begin_x = tx( 0 )
-    		var begin_y = ty( begin_y_data )
+    		var begin_y_data = data_array[0][1];
+    		var begin_x = tx( 0 );
+    		var begin_y = ty( begin_y_data );
     		context.beginPath();
     		context.moveTo(begin_x, height - begin_y);
     		for (var i = 1; i < data_array.length; i++) {
-    			var new_x = tx( i )
-    			var y = data_array[i][1]
-    			var new_y = ty( y )
-    			context.lineTo(new_x, height - new_y)
+    			var new_x = tx( i );
+    			var y = data_array[i][1];
+    			var new_y = ty( y );
+    			context.lineTo(new_x, height - new_y);
     		};
     		context.strokeStyle = color;
     		context.stroke();
     	};
     };
 
-    var data_json = loadJSON();
-    console.log(data_json)
-	var data_CSV = loadCSV();
-	console.log(data_CSV)
+    // Define the function to draw the legend
+    function draw_legend() {
+    	var canvas = document.getElementById('canvas');
 
+    	// Define the various types of spacing
+	  	var spacing_0 = 50;
+	  	var spacing_1 = 85;
+	  	var spacing_2 = 90
+	  	var spacing_3 = 120;
+	  	var spacing_4 = 125;
+	  	var spacing_5 = 150;
+	  	var spacing_6 = 235;
+	  	var spacing_7 = 240;
+	  	var spacing_8 = 280;
+	  	var spacing_9 = 300;
+
+	  	if (canvas.getContext){
+    		var context = canvas.getContext('2d');
+
+    		// Draw the outlining
+	  		context.beginPath();
+	  		context.moveTo(width - spacing_9, spacing_0);
+	  		context.lineTo(width - spacing_0, spacing_0);
+	  		context.lineTo(width - spacing_0, spacing_5);
+	  		context.lineTo(width - spacing_9, spacing_5);
+	  		context.lineTo(width - spacing_9, spacing_0);
+	  		context.stroke()
+
+	  		// Draw the maximum temperature line
+	  		context.beginPath();
+	  		context.moveTo(width - spacing_8, spacing_1);
+	  		context.lineTo(width - spacing_7, spacing_1);
+	  		context.strokeStyle = '#FF0000';
+	  		context.stroke()
+
+	  		// Draw the minimum temperature line
+	  		context.beginPath();
+	  		context.moveTo(width - spacing_8, spacing_3);
+	  		context.lineTo(width - spacing_7, spacing_3);
+	  		context.strokeStyle = '#0000FF';
+	  		context.stroke();
+
+	  		// Draw the text
+	  		context.font = "16px serif";
+	  		context.fillText("Maximum temperature", width - spacing_6, spacing_2);
+	  		context.fillText("Minimum temperature", width - spacing_6, spacing_4);
+	  		context.fillStyle = "#000000";
+	  	}
+    }
+
+    // Define the needed variables
+    var data_json = loadJSON();
+	var data_CSV = loadCSV();
 	var borders_csv = findBorders(data_CSV);
 	var borders_json = findBorders(data_json);
 	var min_temp = borders_csv[0];
-	console.log(min_temp)
 	var max_temp = borders_json[1];
 	var width = borders_json[2];
 	var height = borders_json[3];
 
+
+	// Call the functions
 	draw_axis();
 	draw_text();
+	draw_legend();
 	draw(data_json, '#FF0000');
 	draw(data_CSV, '#0000FF');
 
