@@ -1,0 +1,20 @@
+textarea {
+	visibility: hidden;
+	display:none;
+	}
+
+#canvas {
+	top: 55px;
+	left: 450px;
+	position: absolute;
+}
+
+h1 {
+	left: 200px;
+	position: absolute;
+}
+
+#svg {
+	top: 75px;
+	position: absolute;
+}
