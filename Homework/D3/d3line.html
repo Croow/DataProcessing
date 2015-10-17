@@ -5,7 +5,7 @@
 	<title>KNMI Data 2000</title>
 	<script src="d3.js"></script>
 	<script src="d3.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="d3linw.css">
+  <link rel="stylesheet" type="text/css" href="d3line.css">
 </head>
 
 <body>
@@ -108,7 +108,7 @@ d3.json("jsondata.json", function(error, data){
         d = x0 - d0.date > d1.date - x0 ? d1 : d0;
     focus.attr("transform", "translate(" + x(d.date) + "," + y(d.temperature) + ")");
     clearTimeout(timeout);
-    timeout = setTimeout(function() {focus.select("text").text(d.temperature);}, 750);
+    timeout = setTimeout(function() {focus.select("text").text(d.temperature+ "x0.1 degrees celcius");}, 750);
   }
 
     });
